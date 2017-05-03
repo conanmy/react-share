@@ -32,7 +32,7 @@
       <td><input type="text" placeholder="Name" id="newContactName" /></td>
       <td><input type="text" placeholder="Phone" id="newContactPhone" /></td>
       <td><input type="text" placeholder="Email" id="newContactEmail" /></td>
-      <td><button id="addContact">Add</button</td>
+      <td><button id="addContact">Add</button></td>
     </tr>
   </table>
   <script>
@@ -49,7 +49,7 @@
       + '<td><input type="text" id="editContactName" value={Name} /></td>'
       + '<td><input type="text" id="editContactPhone" value={Phone} /></td>'
       + '<td><input type="text" id="editContactEmail" value={Email} /></td>'
-      + '<td><button id="saveContact">Save</button</td>'
+      + '<td><button id="saveContact">Save</button></td>'
     + '</tr>';
 
     apigClient.defaultGet({}, {}, {})
@@ -72,9 +72,7 @@
         email: document.getElementById('newContactEmail').value
       }}, {}).then(function(result){
         window.location.reload();
-      }).catch( function(result){
-        // Add error callback code here.
-      });
+      }).catch( function(result){});
     });
 
     function addEditButtonListeners() {
