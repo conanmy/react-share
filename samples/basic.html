@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+h2 {
+  color: white;
+  background-color: lightblue;
+  line-height: 50px;
+}
+.main {
+  width: 800px;
+  height: 800px;
+  margin: 0 auto;
+  background-color: powderblue;
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<h2>This is navigation</h2>
+<div class="main" id="main">This is content.</div>
+<script>
+  var mainDom = document.getElementById('main');
+  var colors = ['green', 'red', 'pink', 'yellow', 'orange'];
+  window.setInterval(function() {
+    mainDom.style.backgroundColor = colors[Math.floor(Math.random()*4)];
+  }, 500);
+</script>
+</body>
+</html>

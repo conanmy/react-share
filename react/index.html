@@ -13,6 +13,9 @@
 <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
 <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
 <script type="text/javascript" src="apigClient.js"></script>
+<script src="https://unpkg.com/react@15/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <style>
   td {
     padding: 5px 20px;
@@ -35,35 +38,66 @@
       <td><button id="addContact">Add</button</td>
     </tr>
   </table>
-  <script>
-    var contacts = [];
+  <script type="text/babel">
     var apigClient = apigClientFactory.newClient();
-
-    var trTemplate = '<tr id="contact-{index}">'
-      + '<td>{Name}</td>'
-      + '<td>{Phone}</td>'
-      + '<td>{Email}</td>'
-      + '<td><button class="editContact" id="editContact-{index}">Edit</button></td>'
-    + '</tr>';
-    var editTrTemplate = '<tr id="contact-{index}">'
-      + '<td><input type="text" id="editContactName" value={Name} /></td>'
-      + '<td><input type="text" id="editContactPhone" value={Phone} /></td>'
-      + '<td><input type="text" id="editContactEmail" value={Email} /></td>'
-      + '<td><button id="saveContact">Save</button</td>'
-    + '</tr>';
-
-    apigClient.defaultGet({}, {}, {})
-      .then(function(result){
-        contacts = result.data.data;
-        var contactTrs = '';
-        contacts.map(function(contact, index) {
-          console.log(contact);
-          contactTrs = contactTrs + trTemplate.replace('{index}', index).replace('{index}', index)
-            .replace('{Name}', contact.name).replace('{Phone}', contact.phone).replace('{Email}', contact.email);
-        });
-        document.getElementById('contactTable').innerHTML = contactTrs;
-        addEditButtonListeners();
-      }).catch(function(result){});
+    var ContactBook = React.creatClass({
+      getInitialState: function() {
+        return {contacts: []};
+      },
+      componentWillMount: function() {
+        apigClient.defaultGet({}, {}, {}).then(function(result){
+          contacts = result.data.data;
+          var contactTrs = '';
+          contacts.map(function(contact, index) {
+            console.log(contact);
+            contactTrs = contactTrs + trTemplate.replace('{index}', index).replace('{index}', index)
+              .replace('{Name}', contact.name).replace('{Phone}', contact.phone).replace('{Email}', contact.email);
+          });
+          document.getElementById('contactTable').innerHTML = contactTrs;
+          addEditButtonListeners();
+        }).catch(function(result){});
+      },
+      onEditContact: function(index) {
+        this.setState({editingIndex: index});
+      },
+      render: function() {
+        var that = this;
+        return (
+          <div>
+            <table id="contactTable">
+              this.state.contacts.map(function(contact, index) {
+                return (
+                  {
+                    that.state.editingIndex == index ?
+                    <tr>
+                      <td><input type="text" id="editContactName" value={Name} /></td>
+                      <td><input type="text" id="editContactPhone" value={Phone} /></td>
+                      <td><input type="text" id="editContactEmail" value={Email} /></td>
+                      <td><button id="saveContact">Save</button</td>
+                    </tr>
+                    :
+                    <tr>
+                      <td>{Name}</td>
+                      <td>{Phone}</td>
+                      <td>{Email}</td>
+                      <td><button class="editContact" onClick={function(){that.onEditContact(index)}>Edit</button></td>
+                    </tr>
+                  }
+                );
+              })
+            </table>
+            <table id="newContactTable">
+              <tr>
+                <td><input type="text" placeholder="Name" id="newContactName" /></td>
+                <td><input type="text" placeholder="Phone" id="newContactPhone" /></td>
+                <td><input type="text" placeholder="Email" id="newContactEmail" /></td>
+                <td><button id="addContact">Add</button</td>
+              </tr>
+            </table>
+          </div>
+        );
+      }
+    });
     
     document.getElementById('addContact').addEventListener('click', function() {
       apigClient.defaultPut({}, {body: {
@@ -89,7 +123,6 @@
         });
       }
     }
-    
   </script>
 </body>
 </html>
